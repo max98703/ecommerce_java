@@ -25,11 +25,9 @@ public class DBConnection {
             return conn;
         } catch (ClassNotFoundException e) {
             System.out.println("MySQL Driver not found!");
-            e.printStackTrace();
+            return null;
         } catch (SQLException e) {
-            System.out.println("SQL Error: " + e.getMessage());
-            e.printStackTrace();
+            return null;
         }
-        return null;
     }
 }

@@ -10,7 +10,7 @@ public class ItemDAO extends BaseDAO {
     // Check if seller exists
     public boolean sellerExists(int sellerId) throws Exception {
         String sql = "SELECT id FROM sellers WHERE id = ?";
-        try (ResultSet rs = select(sql, sellerId)) {
+        try (ResultSet rs = runQuery(sql, sellerId).rs) {
             return rs.next(); 
         }
     }
@@ -23,13 +23,13 @@ public class ItemDAO extends BaseDAO {
         }
 
         String sql = "INSERT INTO items (seller_id, name, price, quantity) VALUES (?, ?, ?, ?)";
-        return insert(sql, item.sellerId, item.name, item.price, item.quantity);
+        return executeInsert(sql, item.sellerId, item.name, item.price, item.quantity);
     }
 
     // Update item quantity
     public int updateItemQuantity(int itemId, int newQuantity) throws Exception {
         String sql = "UPDATE items SET quantity = ? WHERE id = ?";
-        return update(sql, newQuantity, itemId);
+        return executeUpdate(sql, newQuantity, itemId);
     }
 
 
@@ -38,7 +38,7 @@ public class ItemDAO extends BaseDAO {
         String sql = "SELECT * FROM items WHERE name LIKE ?";
         List<Item> list = new ArrayList<>();
 
-        try (ResultSet rs = select(sql, "%" + keyword + "%")) {
+        try (ResultSet rs = runQuery(sql, "%" + keyword + "%").rs) {
             while (rs.next()) {
                 Item i = new Item();
                 i.id = rs.getInt("id");

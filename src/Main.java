@@ -27,7 +27,14 @@ public class Main {
             System.out.println("8. Exit");
             System.out.print("Choose: ");
 
-            int choice = sc.nextInt();
+            int choice;
+            try {
+                choice = sc.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a number.");
+                sc.nextLine(); // clear invalid input
+                continue;
+            }
             sc.nextLine(); // consume newline
 
             switch (choice) {
