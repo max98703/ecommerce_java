@@ -5,9 +5,10 @@ import models.Seller;
 
 public class SellerDAO extends BaseDAO {
 
-    // Add seller
+    // Adds a new seller if the email doesn't exist; returns existing seller ID otherwise
     public int addSeller(Seller s) throws Exception {
-        // Optional: check if email already exists
+        
+        // Check if seller with the email already exists
         String checkSql = "SELECT id FROM sellers WHERE email = ?";
         try (ResultSet rs = runQuery(checkSql, s.email).rs) {
             if (rs.next()) return rs.getInt("id"); // Return existing seller ID

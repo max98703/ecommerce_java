@@ -9,13 +9,15 @@ public class DBConnection {
     private static final String URL = "jdbc:mysql://127.0.0.1:3306/ecommerce_db?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";
     private static final String PASS = "";
-
+    
+    // Establishes and returns a connection to the database
     public static Connection getConnection() {
         try {
-            // Load MySQL JDBC driver
+            
+            // Load MySQL JDBC Driver
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // Get the connection
+            // Establish the connection
             Connection conn = DriverManager.getConnection(URL, USER, PASS);
             
             if (conn == null) {

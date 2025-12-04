@@ -1,8 +1,8 @@
 package services;
 
-import models.Item;
 import java.util.ArrayList;
 import java.util.List;
+import models.Item;
 
 public class BasketService {
     private List<Item> items = new ArrayList<>();
@@ -12,19 +12,19 @@ public class BasketService {
         items.add(i);
     }
 
-    // Get all items
+    // Get all items in basket
     public List<Item> getItems() {
         return items;
     }
 
-    // Calculate total price
+    // Calculate total price of items in basket
     public double getTotal() {
         double total = 0;
         for (Item i : items) total += i.price;
         return total;
     }
 
-    // Clear basket after purchase
+    // Clear the basket
     public void clear() {
         items.clear();
     }

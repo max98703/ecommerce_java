@@ -9,15 +9,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Common DB helper for DAOs.
- * Not a strict pattern — just utilities used across the project.
+ * Base DAO class providing common database operations.
  */
 public abstract class BaseDAO {
 
     private static final Logger log = Logger.getLogger(BaseDAO.class.getName());
-
+    
+    //check for connection before each operation
     protected Connection open() throws SQLException {
-        // Real projects usually wrap connection getting with logging
+        //wrap connection getting with logging
         try {
             return DBConnection.getConnection();
         } catch (Exception ex) {
@@ -67,7 +67,7 @@ public abstract class BaseDAO {
     }
 
     /**
-     * Select returning ResultSet — consumer must close it.
+     * select helper.
      */
     protected QueryHandle runQuery(String sql, Object... args) throws SQLException {
         Connection c = open(); // not closed here
@@ -88,7 +88,7 @@ public abstract class BaseDAO {
     }
 
     /**
-     * Wrapper to fix the resource leak issue without using perfect DAO boilerplate.
+     * A simple wrapper class to hold query resources for later cleanup.
      */
     public static class QueryHandle {
         public final Connection c;

@@ -2,6 +2,7 @@ package models;
 
 import java.sql.Timestamp;
 
+// Purchase model class
 public class Purchase {
     public int id;           // primary key
     public int buyerId;      // buyer who purchased

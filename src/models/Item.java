@@ -1,5 +1,6 @@
 package models;
 
+// Item model class
 public class Item {
     public int id;
     public int sellerId;

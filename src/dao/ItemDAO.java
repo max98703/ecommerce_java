@@ -15,13 +15,14 @@ public class ItemDAO extends BaseDAO {
         }
     }
 
-    // Add item
+    // Add new item
     public int addItem(Item item) throws Exception {
         if (!sellerExists(item.sellerId)) {
             System.out.println("Cannot add item: Seller ID " + item.sellerId + " does not exist.");
             return 0;
         }
-
+        
+        // Insert item
         String sql = "INSERT INTO items (seller_id, name, price, quantity) VALUES (?, ?, ?, ?)";
         return executeInsert(sql, item.sellerId, item.name, item.price, item.quantity);
     }
@@ -33,7 +34,7 @@ public class ItemDAO extends BaseDAO {
     }
 
 
-    // Search items by keyword
+    // Search items by name keyword
     public List<Item> searchItems(String keyword) throws Exception {
         String sql = "SELECT * FROM items WHERE name LIKE ?";
         List<Item> list = new ArrayList<>();

@@ -3,20 +3,27 @@ import dao.*;
 import java.util.*;
 import models.*;
 
+// Main application class
 public class Main {
-
+    
+    // Main application entry point
     public static void main(String[] args) {
-
+        
+        // Initialize DAOs and scanner
         Scanner sc = new Scanner(System.in);
         ItemDAO itemDAO = new ItemDAO();
         SellerDAO sellerDAO = new SellerDAO();
         BuyerDAO buyerDAO = new BuyerDAO();
         BasketDAO basketDAO = new BasketDAO();
         PurchaseDAO purchaseDAO = new PurchaseDAO();
-
+        
+        // Current logged-in buyer
         Buyer currentBuyer = null;
-
+        
+        // Main loop
         while (true) {
+
+            // Display menu
             System.out.println("\n=== E-COMMERCE SYSTEM ===");
             System.out.println("1. Register Seller");
             System.out.println("2. Seller Add Item");
@@ -33,10 +40,10 @@ public class Main {
                 choice = sc.nextInt();
             } catch (InputMismatchException e) {
                 System.out.println("Invalid input. Please enter a number.");
-                sc.nextLine(); // clear invalid input
+                sc.nextLine(); // clear wrong input
                 continue;
             }
-            sc.nextLine(); // consume newline
+            sc.nextLine(); // clear newline
 
             switch (choice) {
 
