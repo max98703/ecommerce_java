@@ -9,7 +9,7 @@ public class BuyerDAO extends BaseDAO {
     public int addBuyer(Buyer b) throws Exception {
         if (isEmailExists(b.email)) {
             String sql = "SELECT id FROM buyers WHERE email = ?";
-            try (ResultSet rs = runQuery(sql, b.email).rs) {
+            try (ResultSet rs = runQuery(sql, b.email)) {
                 if (rs.next()) return rs.getInt("id");
             }
         }
@@ -22,7 +22,7 @@ public class BuyerDAO extends BaseDAO {
     // Checks if a buyer with the given email already exists
     public boolean isEmailExists(String email) throws Exception {
         String sql = "SELECT 1 FROM buyers WHERE email = ?";
-        try (ResultSet rs = runQuery(sql, email).rs) {
+        try (ResultSet rs = runQuery(sql, email)) {
             return rs.next();
         }
     }

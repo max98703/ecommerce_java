@@ -10,7 +10,7 @@ public class ItemDAO extends BaseDAO {
     // Check if seller exists
     public boolean sellerExists(int sellerId) throws Exception {
         String sql = "SELECT id FROM sellers WHERE id = ?";
-        try (ResultSet rs = runQuery(sql, sellerId).rs) {
+        try (ResultSet rs = runQuery(sql, sellerId)) {
             return rs.next(); 
         }
     }
@@ -39,7 +39,7 @@ public class ItemDAO extends BaseDAO {
         String sql = "SELECT * FROM items WHERE name LIKE ?";
         List<Item> list = new ArrayList<>();
 
-        try (ResultSet rs = runQuery(sql, "%" + keyword + "%").rs) {
+        try (ResultSet rs = runQuery(sql, "%" + keyword + "%")) {
             while (rs.next()) {
                 Item i = new Item();
                 i.id = rs.getInt("id");

@@ -14,10 +14,10 @@ public class BasketDAO extends BaseDAO {
 
     // Adds an item to the buyer's basket, but only if there's enough in stock
     public int addToBasket(Basket b) throws Exception {
-        int stockAvailable = 0;
+        int stockAvailable;
 
         // Check stock availability
-        try (ResultSet rs = runQuery("SELECT quantity FROM items WHERE id = ?", b.itemId).rs) {
+        try (ResultSet rs = runQuery("SELECT quantity FROM items WHERE id = ?", b.itemId)) {
             if (!rs.next()) {
                 return 0;  // Item does not exit
             }
@@ -28,12 +28,10 @@ public class BasketDAO extends BaseDAO {
         }
 
         // Reduce stock in items table
-        executeUpdate("UPDATE items SET quantity = quantity - ? WHERE id = ?", 
-               b.quantity, b.itemId);
+        executeUpdate("UPDATE items SET quantity = quantity - ? WHERE id = ?", b.quantity, b.itemId);
 
         // Add to basket
-        return executeInsert("INSERT INTO basket (buyer_id, item_id, quantity) VALUES (?, ?, ?)", 
-                      b.buyerId, b.itemId, b.quantity);
+        return executeInsert("INSERT INTO basket (buyer_id, item_id, quantity) VALUES (?, ?, ?)", b.buyerId, b.itemId, b.quantity);
     }
 
     // Retrieves all items in the buyer's basket with full item details
@@ -48,7 +46,7 @@ public class BasketDAO extends BaseDAO {
                      WHERE b.buyer_id = ?
                      """;
 
-        try (ResultSet rs = runQuery(sql, buyerId).rs) {
+        try (ResultSet rs = runQuery(sql, buyerId)) {
             while (rs.next()) {
                 Item item = new Item();
                 item.id = rs.getInt("id");

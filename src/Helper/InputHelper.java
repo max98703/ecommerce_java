@@ -4,6 +4,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
+// Utility class for handling user input
 public class InputHelper {
     
     // Email validation pattern

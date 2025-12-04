@@ -20,9 +20,9 @@ public abstract class BaseDAO {
         //wrap connection getting with logging
         try {
             return DBConnection.getConnection();
-        } catch (Exception ex) {
-            log.log(Level.SEVERE, "Failed to obtain DB connection", ex);
-            throw ex;
+        } catch (Exception e) {
+            log.log(Level.SEVERE, "Failed to obtain DB connection", e);
+            throw e;
         }
     }
 
@@ -30,24 +30,17 @@ public abstract class BaseDAO {
      * Insert operation that returns generated ID if available.
      */
     protected int executeInsert(String query, Object... values) throws SQLException {
-        int generatedId = -1;
 
         try (Connection con = open();
-             PreparedStatement st = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            PreparedStatement st = con.prepareStatement(query)) {
 
             bindParams(st, values);
-            st.executeUpdate();
+            return st.executeUpdate();
 
-            try (ResultSet keys = st.getGeneratedKeys()) {
-                if (keys.next()) {
-                    generatedId = keys.getInt(1);
-                }
-            }
-        } catch (SQLException ex) {
-            log.log(Level.WARNING, "Insert failed: " + query, ex);
-            throw ex;
+        } catch (SQLException e) {
+            log.log(Level.WARNING, "Insert failed: ", e);
+            throw e;
         }
-        return generatedId;
     }
 
     /**
@@ -60,26 +53,26 @@ public abstract class BaseDAO {
             bindParams(st, params);
             return st.executeUpdate();
 
-        } catch (SQLException ex) {
-            log.log(Level.INFO, "DB update failed", ex);
-            throw ex;
+        } catch (SQLException e) {
+            log.log(Level.INFO, "DB update failed", e);
+            throw e;
         }
     }
 
     /**
      * select helper.
      */
-    protected QueryHandle runQuery(String sql, Object... args) throws SQLException {
-        Connection c = open(); // not closed here
+    protected ResultSet runQuery(String sql, Object... args) throws SQLException {
+        Connection c = open();
         PreparedStatement ps = c.prepareStatement(sql);
         bindParams(ps, args);
 
         ResultSet rs = ps.executeQuery();
-        return new QueryHandle(c, ps, rs); // wrapper ensures cleanup later
+        return rs;
     }
 
     /**
-     * A small helper method used internally to bind parameters.
+     * Binds parameters to a PreparedStatement.
      */
     private void bindParams(PreparedStatement st, Object... list) throws SQLException {
         for (int idx = 0; idx < list.length; idx++) {
@@ -87,24 +80,4 @@ public abstract class BaseDAO {
         }
     }
 
-    /**
-     * A simple wrapper class to hold query resources for later cleanup.
-     */
-    public static class QueryHandle {
-        public final Connection c;
-        public final PreparedStatement ps;
-        public final ResultSet rs;
-
-        public QueryHandle(Connection c, PreparedStatement ps, ResultSet rs) {
-            this.c = c;
-            this.ps = ps;
-            this.rs = rs;
-        }
-
-        public void close() {
-            try { rs.close(); } catch (Exception ignore) {}
-            try { ps.close(); } catch (Exception ignore) {}
-            try { c.close(); } catch (Exception ignore) {}
-        }
-    }
 }

@@ -10,7 +10,7 @@ public class SellerDAO extends BaseDAO {
         
         // Check if seller with the email already exists
         String checkSql = "SELECT id FROM sellers WHERE email = ?";
-        try (ResultSet rs = runQuery(checkSql, s.email).rs) {
+        try (ResultSet rs = runQuery(checkSql, s.email)) {
             if (rs.next()) return rs.getInt("id"); // Return existing seller ID
         }
 
