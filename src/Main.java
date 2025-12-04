@@ -32,7 +32,8 @@ public class Main {
             System.out.println("5. Buyer Search Items");
             System.out.println("6. View Basket");
             System.out.println("7. Purchase Basket");
-            System.out.println("8. Exit");
+            System.out.println("8. Add Balance");
+            System.out.println("9. Exit");
             System.out.print("Choose: ");
 
             int choice;
@@ -107,6 +108,7 @@ public class Main {
 
                         currentBuyer = b;
                         currentBuyer.id = id;
+                        currentBuyer.balance = buyerDAO.fetchBalance(id);
                     } catch (Exception e) {
                         System.out.println("Failed to add buyer: " + e.getMessage());
                         return;
@@ -202,10 +204,17 @@ public class Main {
                             break;
                         }
 
-                        double total = 0;
+                        // Calculate total cost
+                        double total = basketDAO.getBasketTotal(currentBuyer.id);
+
+                        // Check buyer balance
+                        if (currentBuyer.balance < total) {
+                            System.out.println("Not enough balance!");
+                            break;
+                        }
+
                         for (Item it : basketItems) {
-                            total += it.price * it.quantity;
-                            itemDAO.updateItemQuantity(it.id, it.quantity - it.quantity); // adjust stock
+                            itemDAO.updateItemQuantity(it.id, it.quantity - it.quantity); // Deduct purchased quantity from stock
                             Purchase p = new Purchase();
                             p.buyerId = currentBuyer.id;
                             p.itemId = it.id;
@@ -215,6 +224,9 @@ public class Main {
                         }
 
                         basketDAO.clearBasket(currentBuyer.id);
+                        sellerDAO.updateSellerBalance(currentBuyer.id, total);
+                        buyerDAO.updateBalance(currentBuyer.id, total);
+                        currentBuyer.balance -= total;
                         System.out.println("Purchase successful! Total = $" + total);
 
                     } catch (Exception e) {
@@ -222,8 +234,25 @@ public class Main {
                         return;
                     }
                 }
+                case 8-> { // Add Balance
+                    if (currentBuyer == null) {
+                        System.out.println("Please register/login as buyer first!");
+                        break;
+                    }
+                    double balance = InputHelper.checkDouble(sc, "Balace: ");
+                    try {
 
-                case 8 -> { System.out.println("Goodbye!"); return; }
+                        buyerDAO.addBalance(currentBuyer.id, balance);
+                        currentBuyer.balance += balance;
+                        System.out.println("Successfully added balance!");
+
+                    } catch (Exception e) {
+                        System.out.println("Error processing purchase: " + e.getMessage());
+                        return;
+                    }
+                }
+
+                case 9 -> { System.out.println("Goodbye!"); return; }
 
                 default -> System.out.println("Invalid choice!");
             }

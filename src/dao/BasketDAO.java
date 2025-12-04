@@ -40,10 +40,12 @@ public class BasketDAO extends BaseDAO {
 
         // Join basket and items to get full details
         String sql = """
-                     SELECT b.id AS basket_id, i.*, b.quantity AS basket_quantity
-                     FROM basket b
-                     JOIN items i ON b.item_id = i.id
-                     WHERE b.buyer_id = ?
+                        SELECT 
+                          b.id AS basket_id, i.*, b.quantity AS basket_quantity
+                        FROM basket b
+                        JOIN items i 
+                          ON b.item_id = i.id
+                        WHERE b.buyer_id = ?
                      """;
 
         try (ResultSet rs = runQuery(sql, buyerId)) {
@@ -63,5 +65,24 @@ public class BasketDAO extends BaseDAO {
     // Clears all items from the buyer's basket
     public int clearBasket(int buyerId) throws Exception {
         return executeUpdate("DELETE FROM basket WHERE buyer_id = ?", buyerId);
+    }
+    
+    // Calculates the total cost of items in the buyer's basket
+    public double getBasketTotal(int buyerId) throws Exception {
+        String sql = """
+                        SELECT 
+                          SUM(i.price * b.quantity) as total
+                        FROM basket b
+                        JOIN items i 
+                          ON b.item_id = i.id
+                        WHERE b.buyer_id = ?
+                    """;
+        
+        try (ResultSet rs = runQuery(sql, buyerId)) {
+            if (rs.next()) {
+                return rs.getDouble("total");
+            }
+        }
+        return 0.0; 
     }
 }

@@ -21,9 +21,29 @@ public class BuyerDAO extends BaseDAO {
 
     // Checks if a buyer with the given email already exists
     public boolean isEmailExists(String email) throws Exception {
-        String sql = "SELECT 1 FROM buyers WHERE email = ?";
+        String sql = "SELECT * FROM buyers WHERE email = ?";
         try (ResultSet rs = runQuery(sql, email)) {
             return rs.next();
         }
+    }
+    
+    // Update buyer balance by adding the specified amount
+    public int addBalance(int buyerId, double amount) throws Exception {
+        String sql = "UPDATE buyers SET balance = balance + ? WHERE id = ?";
+        return executeUpdate(sql, amount, buyerId);
+    }
+    
+     // Fetch buyer balance
+    public double fetchBalance(int id) throws Exception {
+        String sql = "SELECT balance FROM buyers WHERE id = ?";
+        try (ResultSet rs = runQuery(sql, id)) {
+            if (rs.next()) return rs.getInt("balance");
+        }
+        return 0.0;
+    }
+
+    public double updateBalance(int id, double amount) throws Exception {
+        String sql = "UPDATE buyers SET balance = balance - ? WHERE id = ?";
+        return executeUpdate(sql, amount, id);
     }
 }

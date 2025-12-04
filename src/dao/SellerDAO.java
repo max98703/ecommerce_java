@@ -17,4 +17,11 @@ public class SellerDAO extends BaseDAO {
         String insertSql = "INSERT INTO sellers (name, email) VALUES (?, ?)";
         return executeInsert(insertSql, s.name, s.email);
     }
+    
+    // Update seller balance by adding the specified amount
+    public int updateSellerBalance(int sellerId, double amount) throws Exception {
+        String sql = "UPDATE sellers SET balance = balance + ? WHERE id = ?";
+        return executeUpdate(sql, amount, sellerId);
+    }
+
 }

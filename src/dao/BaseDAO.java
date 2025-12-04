@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,10 +33,18 @@ public abstract class BaseDAO {
     protected int executeInsert(String query, Object... values) throws SQLException {
 
         try (Connection con = open();
-            PreparedStatement st = con.prepareStatement(query)) {
+            PreparedStatement statement = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
-            bindParams(st, values);
-            return st.executeUpdate();
+            bindParams(statement, values);
+            int rows =  statement.executeUpdate();
+            if (rows > 0) {
+                ResultSet result = statement.getGeneratedKeys();
+                if (result.next()){
+                    return result.getInt(1);
+                }
+            }
+
+            return 0;
 
         } catch (SQLException e) {
             log.log(Level.WARNING, "Insert failed: ", e);
@@ -48,10 +57,10 @@ public abstract class BaseDAO {
      */
     protected int executeUpdate(String sql, Object... params) throws SQLException {
         try (Connection con = open();
-            PreparedStatement st = con.prepareStatement(sql)) {
+            PreparedStatement statement = con.prepareStatement(sql)) {
 
-            bindParams(st, params);
-            return st.executeUpdate();
+            bindParams(statement, params);
+            return statement.executeUpdate();
 
         } catch (SQLException e) {
             log.log(Level.INFO, "DB update failed", e);
