@@ -1,3 +1,4 @@
+import Helper.InputHelper;
 import dao.*;
 import java.util.*;
 import models.*;
@@ -42,7 +43,7 @@ public class Main {
                 case 1 -> { // Register Seller
                     Seller s = new Seller();
                     System.out.print("Name: "); s.name = sc.nextLine();
-                    System.out.print("Email: "); s.email = sc.nextLine();
+                    s.email = InputHelper.checkEmail(sc, "Email: ");
                     try {
                         int id = sellerDAO.addSeller(s);
                         System.out.println("Seller ID = " + id);
@@ -54,10 +55,10 @@ public class Main {
 
                 case 2 -> { // Seller Add Item
                     Item i = new Item();
-                    System.out.print("Seller ID: "); i.sellerId = sc.nextInt(); sc.nextLine();
-                    System.out.print("Item Name: "); i.name = sc.nextLine();
-                    System.out.print("Price: "); i.price = sc.nextDouble();
-                    System.out.print("Quantity: "); i.quantity = sc.nextInt(); sc.nextLine();
+                    i.sellerId = InputHelper.checkInt(sc, "Seller ID: ");
+                    System.out.print("Item Name: ");i.name = sc.nextLine();
+                    i.price = InputHelper.checkDouble(sc, "Price: ");
+                    i.quantity = InputHelper.checkInt(sc, "Quantity: ");
                     try {
                         itemDAO.addItem(i);
                         System.out.println("Item added!");
@@ -69,7 +70,7 @@ public class Main {
 
                 case 3 -> { // Update Item Quantity
                     System.out.print("Item ID: "); int id = sc.nextInt();
-                    System.out.print("New Quantity: "); int q = sc.nextInt(); sc.nextLine();
+                    int q = InputHelper.checkInt(sc, "New Quantity:");
                     try {
                         int rows = itemDAO.updateItemQuantity(id, q);
                         if (rows == 0) {
@@ -86,7 +87,7 @@ public class Main {
                 case 4 -> { // Register Buyer
                     Buyer b = new Buyer();
                     System.out.print("Name: "); b.name = sc.nextLine();
-                    System.out.print("Email: "); b.email = sc.nextLine();
+                    b.email = InputHelper.checkEmail(sc, "Email: ");
                     try {
                         int id = buyerDAO.addBuyer(b);
                         if (id != 0) {
@@ -121,11 +122,9 @@ public class Main {
                         for (Item it : list) {
                             System.out.println(it.id + ". " + it.name + " - $" + it.price + " (" + it.quantity + ")");
                         }
-                        System.out.print("Add item to basket by ID (0 = skip): ");
-                        int itemId = sc.nextInt(); sc.nextLine();
+                        int itemId = InputHelper.checkInt(sc, "Add item to basket by ID (0 = skip): ");
                         if (itemId != 0) {
-                            System.out.print("Quantity: ");
-                            int qty = sc.nextInt(); sc.nextLine();
+                            int qty = InputHelper.checkInt(sc, "Quantity:");
                             Basket b = new Basket();
                             b.buyerId = currentBuyer.id;
                             b.itemId = itemId;
